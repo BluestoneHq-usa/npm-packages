@@ -4,73 +4,59 @@ const require = createRequire(import.meta.url);
 const readline = require('readline');
 const { exec, spawn } = require('child_process');
 const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
+  input: process.stdin,
+  output: process.stdout
 });
 
 const loadingAnimation = () => {
-    let loading = ['Loading', 'Loading.', 'Loading..', 'Loading...'];
-    let i = 0;
+  let loading = ['Loading', 'Loading.', 'Loading..', 'Loading...'];
+  let i = 0;
 
-    return setInterval(() => {
-        process.stdout.write(`\r${loading[i++ % loading.length]}   `);
-    }, 500);
+  return setInterval(() => {
+    process.stdout.write(`\r${loading[i++ % loading.length]}   `);
+  }, 500);
 };
 
 const execShellCommand = (cmd) => new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout, stderr) => {
-        if (error) {
-            console.warn(error);
-            reject(error);
-        }
-        resolve(stdout ? stdout : stderr);
-    });
+  exec(cmd, (error, stdout, stderr) => {
+    if (error) {
+      console.warn(error);
+      reject(error);
+    }
+    resolve(stdout ? stdout : stderr);
+  });
 });
 
 const projectSetup = async (pname) => {
-    console.log("Initializing Project...");
-    const loading = loadingAnimation();
+  console.log("Initializing Project...");
+  const loading = loadingAnimation();
 
-    try {
-        await execShellCommand(`mkdir ${pname}`);
-        await execShellCommand(`mkdir ${pname}/client ${pname}/server`);
-        console.log("Done 2");
-        // Client setup
-        await execShellCommand(`cd ${pname}/client && npm create vite@latest . -- --template react-ts`);
-        console.log("Done 3");
-        await execShellCommand(`cd ${pname}/client && npm i`);
-        console.log("Done 4");
-        await execShellCommand(`cd ${pname}/client && npm install -D tailwindcss postcss autoprefixer`);
-        console.log("Done 5");
-        await execShellCommand(`cd ${pname}/client && npx tailwindcss init -p`);
-        console.log("Done 6");
-        await execShellCommand(`cd ${pname}/client && npm install react-router-dom`);
-        console.log("Done 7");
-        await execShellCommand(`cd ${pname}/client && mkdir components hooks pages types`);
-        console.log("Done 8");
-        await execShellCommand(`echo "/** @type {import('tailwindcss').Config} */
+  try {
+    await execShellCommand(`mkdir ${pname}`);
+    await execShellCommand(`mkdir ${pname}/client ${pname}/server`);
+    // Client setup
+    await execShellCommand(`cd ${pname}/client && npm create vite@latest . -- --template react-ts`);
+    await execShellCommand(`cd ${pname}/client && npm i`);
+    await execShellCommand(`cd ${pname}/client && npm install -D tailwindcss postcss autoprefixer`);
+    await execShellCommand(`cd ${pname}/client && npx tailwindcss init -p`);
+    await execShellCommand(`cd ${pname}/client && npm install react-router-dom`);
+    await execShellCommand(`cd ${pname}/client && mkdir components hooks pages types`);
+    await execShellCommand(`echo "/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: { extend: {} },
   plugins: []
 };" > ${pname}/client/tailwind.config.js`);
 
-        console.log("Done 9");
-        await execShellCommand(`echo "@tailwind base; @tailwind components; @tailwind utilities;" > ${pname}/client/src/index.css`);
-        console.log("Done 10");
-        // Server setup
+    await execShellCommand(`echo "@tailwind base; @tailwind components; @tailwind utilities;" > ${pname}/client/src/index.css`);
+    // Server setup
 
-        await execShellCommand(`cd ${pname}/server && npm init -y`);
-        console.log("Done 11");
-        await execShellCommand(`cd ${pname}/server && npm i typescript`)
-        console.log("Issue Solved.")
-        await execShellCommand(`cd ${pname}/server && npx tsc --init`);
-        console.log("Done 12");
-        await execShellCommand(`cd ${pname}/server && npm i @types/node -D`);
-        console.log("Done 13");
-        await execShellCommand(`cd ${pname}/server && npm install ts-node -D`);
-        console.log("Done 14");
-        await execShellCommand(`echo '{
+    await execShellCommand(`cd ${pname}/server && npm init -y`);
+    await execShellCommand(`cd ${pname}/server && npm i typescript`)
+    await execShellCommand(`cd ${pname}/server && npx tsc --init`);
+    await execShellCommand(`cd ${pname}/server && npm i @types/node -D`);
+    await execShellCommand(`cd ${pname}/server && npm install ts-node -D`);
+    await execShellCommand(`echo '{
             "name": "${pname}",
             "version": "1.0.0",
             "description": "",
@@ -131,8 +117,7 @@ module.exports = {
           }
           
           ' > ${pname}/server/package.json`);
-        console.log("Done 15");
-        await execShellCommand(`echo '
+    await execShellCommand(`echo '
             {
   "compilerOptions": {
     "target": "ES6",
@@ -162,26 +147,20 @@ module.exports = {
 }
 
             ' > ${pname}/server/tsconfig.json`);
-        console.log("Done 16");
-        await execShellCommand(`cd ${pname}/server && npm install`)
-        console.log("Done 17");
-        await execShellCommand(`cd ${pname}/server && mkdir src types`);
-        console.log("Done 18");
-        await execShellCommand(`cd ${pname}/server/src && mkdir config controllers middlewares models repositories routes services utils validators`);
-        console.log("Done 19");
-        await execShellCommand(`cd ${pname}/server/src && touch server.ts`);
-        console.log("Done 20");
-        await execShellCommand(`code ${pname}`);
-        console.log("Done 21");
-    } catch (error) {
-        console.error("Error initializing project:", error);
-    } finally {
-        clearInterval(loading);
-        console.log("\nInitialization Complete!\n");
-    }
+    await execShellCommand(`cd ${pname}/server && npm install`)
+    await execShellCommand(`cd ${pname}/server && mkdir src types`);
+    await execShellCommand(`cd ${pname}/server/src && mkdir config controllers middlewares models repositories routes services utils validators`);
+    await execShellCommand(`cd ${pname}/server/src && touch server.ts`);
+    await execShellCommand(`code ${pname}`);
+  } catch (error) {
+    console.error("Error initializing project:", error);
+  } finally {
+    clearInterval(loading);
+    console.log("\nInitialization Complete!\n");
+  }
 };
 
 rl.question("Project Name: ", (pname) => {
-    projectSetup(pname);
-    rl.close();
+  projectSetup(pname);
+  rl.close();
 });
