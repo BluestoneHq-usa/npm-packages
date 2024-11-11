@@ -1,6 +1,6 @@
 {
   "name": "webapp-initializer",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "This Package Setups A full web app project. for backend it uses  express js and for frontend it uses vite react js all in typescript.",
   "main": "index.js",
   "bin": "./index.js",
@@ -19,6 +19,6 @@
   "author": "Dhruv D. Ahir",
   "license": "ISC",
   "dependencies": {
-    "webapp-initializer": "^1.0.1"
+    "webapp-initializer": "^1.0.5"
   }
 }
